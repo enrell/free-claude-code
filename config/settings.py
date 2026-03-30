@@ -48,6 +48,9 @@ class Settings(BaseSettings):
         validation_alias="LLAMACPP_BASE_URL",
     )
 
+    # ==================== OpenCode Go Config ====================
+    opencode_go_api_key: str = Field(default="", validation_alias="OPENCODE_GO_API_KEY")
+
     # ==================== Model ====================
     # All Claude model requests are mapped to this single model (fallback)
     # Format: provider_type/model/name
@@ -159,7 +162,13 @@ class Settings(BaseSettings):
     def validate_model_format(cls, v: str | None) -> str | None:
         if v is None:
             return None
-        valid_providers = ("nvidia_nim", "open_router", "lmstudio", "llamacpp")
+        valid_providers = (
+            "nvidia_nim",
+            "open_router",
+            "lmstudio",
+            "llamacpp",
+            "opencode_go",
+        )
         if "/" not in v:
             raise ValueError(
                 f"Model must be prefixed with provider type. "
@@ -170,7 +179,7 @@ class Settings(BaseSettings):
         if provider not in valid_providers:
             raise ValueError(
                 f"Invalid provider: '{provider}'. "
-                f"Supported: 'nvidia_nim', 'open_router', 'lmstudio', 'llamacpp'"
+                f"Supported: 'nvidia_nim', 'open_router', 'lmstudio', 'llamacpp', 'opencode_go'"
             )
         return v
 

@@ -33,7 +33,10 @@ def build_request_body(request_data: Any) -> dict:
         thinking.enabled if thinking and hasattr(thinking, "enabled") else True
     )
     if thinking_enabled:
-        extra_body.setdefault("reasoning", {"enabled": True})
+        reasoning_config: dict[str, Any] = {"enabled": True}
+        if thinking and hasattr(thinking, "effort") and thinking.effort:
+            reasoning_config["effort"] = thinking.effort.value
+        extra_body.setdefault("reasoning", reasoning_config)
 
     if extra_body:
         body["extra_body"] = extra_body

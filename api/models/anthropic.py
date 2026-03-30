@@ -75,8 +75,16 @@ class Tool(BaseModel):
     input_schema: dict[str, Any]
 
 
+class ThinkingEffort(StrEnum):
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+    MAX = "max"
+
+
 class ThinkingConfig(BaseModel):
     enabled: bool = True
+    effort: ThinkingEffort | None = None
 
 
 # =============================================================================

@@ -109,6 +109,8 @@ class AnthropicToOpenAIConverter:
             msg["tool_calls"] = tool_calls
         if include_reasoning_for_openrouter and thinking_parts:
             msg["reasoning_content"] = "\n".join(thinking_parts)
+        elif include_reasoning_for_openrouter and tool_calls:
+            msg["reasoning_content"] = ""
 
         return [msg]
 

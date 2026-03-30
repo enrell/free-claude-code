@@ -13,6 +13,7 @@ from .llamacpp import LlamaCppProvider
 from .lmstudio import LMStudioProvider
 from .nvidia_nim import NvidiaNimProvider
 from .open_router import OpenRouterProvider
+from .opencode_go import OpenCodeGoProvider
 
 __all__ = [
     "APIError",
@@ -22,6 +23,7 @@ __all__ = [
     "LMStudioProvider",
     "LlamaCppProvider",
     "NvidiaNimProvider",
+    "OpenCodeGoProvider",
     "OpenRouterProvider",
     "OverloadedError",
     "ProviderConfig",

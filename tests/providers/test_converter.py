@@ -221,6 +221,23 @@ def test_convert_assistant_message_tool_use():
     assert json.loads(tc["function"]["arguments"]) == {"query": "python"}
 
 
+def test_convert_tool_use_with_reasoning_content_empty():
+    """When include_reasoning_for_openrouter=True and tool_calls exist but no thinking,
+    reasoning_content should be set to empty string for providers like Moonshot AI."""
+    content = [MockBlock(type="tool_use", id="call_1", name="search", input={"q": "x"})]
+    messages = [MockMessage("assistant", content)]
+    result = AnthropicToOpenAIConverter.convert_messages(
+        messages, include_reasoning_for_openrouter=True
+    )
+
+    assert len(result) == 1
+    msg = result[0]
+    assert msg["role"] == "assistant"
+    assert "tool_calls" in msg
+    assert len(msg["tool_calls"]) == 1
+    assert msg["reasoning_content"] == ""
+
+
 def test_convert_assistant_message_empty_content():
     # Verify that empty content becomes a single space (NIM requirement)
     # if no tool calls are present.

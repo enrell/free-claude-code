@@ -105,6 +105,22 @@ def test_build_request_body_has_reasoning_extra(open_router_provider):
     assert body["extra_body"]["reasoning"]["enabled"] is True
 
 
+def test_build_request_body_has_reasoning_effort(open_router_provider):
+    """Request body has extra_body.reasoning with effort when thinking.effort is set."""
+    from api.models.anthropic import ThinkingEffort
+
+    thinking_mock = MagicMock()
+    thinking_mock.enabled = True
+    thinking_mock.effort = ThinkingEffort.MAX
+    req = MockRequest(thinking=thinking_mock)
+    body = open_router_provider._build_request_body(req)
+
+    assert "extra_body" in body
+    assert "reasoning" in body["extra_body"]
+    assert body["extra_body"]["reasoning"]["enabled"] is True
+    assert body["extra_body"]["reasoning"]["effort"] == "max"
+
+
 def test_build_request_body_base_url_and_model(open_router_provider):
     """Base URL and model are correct in provider config."""
     assert open_router_provider._base_url == "https://openrouter.ai/api/v1"

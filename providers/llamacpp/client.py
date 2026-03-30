@@ -9,6 +9,7 @@ from loguru import logger
 
 from providers.base import BaseProvider, ProviderConfig
 from providers.common import get_user_facing_error_message, map_error
+from providers.common.utils import map_effort_for_oss
 from providers.rate_limit import GlobalRateLimiter
 
 LLAMACPP_DEFAULT_BASE_URL = "http://localhost:8080/v1"
@@ -69,8 +70,11 @@ class LlamaCppProvider(BaseProvider):
         if "thinking" in body:
             thinking_cfg = body.pop("thinking")
             if isinstance(thinking_cfg, dict) and thinking_cfg.get("enabled"):
-                # Anthropic API requires a budget_tokens value when enabled
-                body["thinking"] = {"type": "enabled"}
+                thinking_config: dict[str, Any] = {"type": "enabled"}
+                mapped_effort = map_effort_for_oss(thinking_cfg.get("effort"))
+                if mapped_effort:
+                    thinking_config["effort"] = mapped_effort
+                body["thinking"] = thinking_config
 
         # Ensure max_tokens is present (Claude API requires it)
         if "max_tokens" not in body:
