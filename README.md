@@ -12,7 +12,7 @@
 [![Code style: Ruff](https://img.shields.io/badge/code%20formatting-ruff-f5a623.svg?style=for-the-badge)](https://github.com/astral-sh/ruff)
 [![Logging: Loguru](https://img.shields.io/badge/logging-loguru-4ecdc4.svg?style=for-the-badge)](https://github.com/Delgan/loguru)
 
-A lightweight proxy that routes Claude Code's Anthropic API calls to **NVIDIA NIM** (40 req/min free), **OpenRouter** (hundreds of models), **LM Studio** (fully local), or **llama.cpp** (local with Anthropic endpoints).
+A lightweight proxy that routes Claude Code's Anthropic API calls to **NVIDIA NIM** (40 req/min free), **OpenRouter** (hundreds of models), **OpenCode Go**, **LM Studio** (fully local), or **llama.cpp** (local with Anthropic endpoints).
 
 [Quick Start](#quick-start) · [Providers](#providers) · [Discord Bot](#discord-bot) · [Configuration](#configuration) · [Development](#development) · [Contributing](#contributing)
 
@@ -31,7 +31,7 @@ A lightweight proxy that routes Claude Code's Anthropic API calls to **NVIDIA NI
 | -------------------------- | ----------------------------------------------------------------------------------------------- |
 | **Zero Cost**              | 40 req/min free on NVIDIA NIM. Free models on OpenRouter. Fully local with LM Studio            |
 | **Drop-in Replacement**    | Set 2 env vars. No modifications to Claude Code CLI or VSCode extension needed                  |
-| **4 Providers**            | NVIDIA NIM, OpenRouter (hundreds of models), LM Studio (local), llama.cpp (`llama-server`)      |
+| **5 Providers**            | NVIDIA NIM, OpenRouter (hundreds of models), OpenCode Go, LM Studio (local), llama.cpp (`llama-server`) |
 | **Per-Model Mapping**      | Route Opus / Sonnet / Haiku to different models and providers. Mix providers freely             |
 | **Thinking Token Support** | Parses `<think>` tags and `reasoning_content` into native Claude thinking blocks                |
 | **Heuristic Tool Parser**  | Models outputting tool calls as text are auto-parsed into structured tool use                   |
@@ -90,6 +90,20 @@ MODEL_OPUS="open_router/deepseek/deepseek-r1-0528:free"
 MODEL_SONNET="open_router/openai/gpt-oss-120b:free"
 MODEL_HAIKU="open_router/stepfun/step-3.5-flash:free"
 MODEL="open_router/stepfun/step-3.5-flash:free"     # fallback
+```
+
+</details>
+
+<details>
+<summary><b>OpenCode Go</b> (OSS models with thinking support)</summary>
+
+```dotenv
+OPENCODE_GO_API_KEY="your-opencode-key-here"
+
+MODEL_OPUS="opencode_go/glm-4-0414"
+MODEL_SONNET="opencode_go/glm-4-0414"
+MODEL_HAIKU="opencode_go/glm-4-flash"
+MODEL="opencode_go/glm-4-flash"                     # fallback
 ```
 
 </details>
@@ -281,17 +295,19 @@ free-claude-code    # starts the server
 | -------------- | ------------ | ---------- | ------------------------------------ |
 | **NVIDIA NIM** | Free         | 40 req/min | Daily driver, generous free tier     |
 | **OpenRouter** | Free / Paid  | Varies     | Model variety, fallback options      |
+| **OpenCode Go**| Free         | Varies     | OSS models with thinking support     |
 | **LM Studio**  | Free (local) | Unlimited  | Privacy, offline use, no rate limits |
 | **llama.cpp**  | Free (local) | Unlimited  | Lightweight local inference engine   |
 
 Models use a prefix format: `provider_prefix/model/name`. An invalid prefix causes an error.
 
-| Provider   | `MODEL` prefix    | API Key Variable     | Default Base URL              |
-| ---------- | ----------------- | -------------------- | ----------------------------- |
-| NVIDIA NIM | `nvidia_nim/...`  | `NVIDIA_NIM_API_KEY` | `integrate.api.nvidia.com/v1` |
-| OpenRouter | `open_router/...` | `OPENROUTER_API_KEY` | `openrouter.ai/api/v1`        |
-| LM Studio  | `lmstudio/...`    | (none)               | `localhost:1234/v1`           |
-| llama.cpp  | `llamacpp/...`    | (none)               | `localhost:8080/v1`           |
+| Provider   | `MODEL` prefix       | API Key Variable        | Default Base URL                     |
+| ---------- | ------------------- | ---------------------- | ----------------------------------- |
+| NVIDIA NIM | `nvidia_nim/...`     | `NVIDIA_NIM_API_KEY`   | `integrate.api.nvidia.com/v1`      |
+| OpenRouter | `open_router/...`    | `OPENROUTER_API_KEY`    | `openrouter.ai/api/v1`             |
+| OpenCode Go| `opencode_go/...`    | `OPENCODE_GO_API_KEY`  | `https://opencode.ai/zen/go/v1`    |
+| LM Studio  | `lmstudio/...`       | (none)                 | `localhost:1234/v1`                |
+| llama.cpp  | `llamacpp/...`       | (none)                 | `localhost:8080/v1`                |
 
 <details>
 <summary><b>NVIDIA NIM models</b></summary>
